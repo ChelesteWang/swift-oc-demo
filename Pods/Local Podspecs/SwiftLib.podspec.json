@@ -1,0 +1,29 @@
+{
+  "name": "SwiftLib",
+  "version": "0.1.0",
+  "summary": "Swift components for the demo app.",
+  "description": "Contains Swift classes and SwiftUI views like MySwiftClass, MySwiftUIView, ComplexComponentView, and UIViewRepresentables.",
+  "homepage": "https://example.com/SwiftLib",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Your Name": "your.email@example.com"
+  },
+  "source": {
+    "git": "https://example.com/SwiftLib.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "15.0"
+  },
+  "swift_versions": "5.0",
+  "source_files": "SwiftLib/Classes/**/*.swift",
+  "dependencies": {
+    "ObjCLib": [
+      "~> 0.1.0"
+    ]
+  },
+  "swift_version": "5.0"
+}

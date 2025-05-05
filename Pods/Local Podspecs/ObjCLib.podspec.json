@@ -1,0 +1,22 @@
+{
+  "name": "ObjCLib",
+  "version": "0.1.0",
+  "summary": "Objective-C components for the demo app.",
+  "description": "Contains Objective-C classes like MyObjectiveCClass, MyObjCUIView, and MyObjCViewController.",
+  "homepage": "https://example.com/ObjCLib",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Your Name": "your.email@example.com"
+  },
+  "source": {
+    "git": "https://example.com/ObjCLib.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "15.0"
+  },
+  "source_files": "ObjCLib/Classes/**/*.{h,m}"
+}

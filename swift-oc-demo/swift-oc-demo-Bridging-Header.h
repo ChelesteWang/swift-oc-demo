@@ -3,3 +3,5 @@
 //
 
 #import "MyObjectiveCClass.h"
+#import "MyObjCUIView.h"
+#import "MyObjCViewController.h" // 导入 Objective-C ViewController // 导入自定义的 Objective-C UIView

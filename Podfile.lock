@@ -1,0 +1,22 @@
+PODS:
+  - ObjCLib (0.1.0)
+  - SwiftLib (0.1.0):
+    - ObjCLib (~> 0.1.0)
+
+DEPENDENCIES:
+  - ObjCLib (from `./`)
+  - SwiftLib (from `./`)
+
+EXTERNAL SOURCES:
+  ObjCLib:
+    :path: "./"
+  SwiftLib:
+    :path: "./"
+
+SPEC CHECKSUMS:
+  ObjCLib: 1bd81268026df25d6123f625747906a588939450
+  SwiftLib: 13cde8bb405776ef72bf41679f99c797d9ce1bf3
+
+PODFILE CHECKSUM: beafca1d358ccb691833a567448f2b881eb2027a
+
+COCOAPODS: 1.16.2
