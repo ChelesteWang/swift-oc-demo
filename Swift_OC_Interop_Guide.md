@@ -48,94 +48,94 @@
     #import "MyObjectiveCClass.h"
     ```
 
-### 在 Swift 中使用 Objective-C 代码
+### 使用方法
 
-完成上述配置后，你就可以在任何 Swift 文件中直接使用桥接头文件中导入的 Objective-C 类了，就像它们是原生的 Swift 类一样。
+- 在你的 Swift 文件中 (`.swift`)，你可以直接实例化和使用桥接头文件中导入的 Objective-C 类。
 
 ```swift
-// ContentView.swift (或其他 Swift 文件)
+// ContentView.swift
 import SwiftUI
 
 struct ContentView: View {
+    let objCInstance = MyObjectiveCClass() // 实例化
+    @State private var message: String = ""
+
     var body: some View {
-        VStack {
-            Text("SwiftUI View")
-            Button("Call Objective-C") {
-                let objCInstance = MyObjectiveCClass() // 直接实例化
-                let message = objCInstance.getMessage() // 直接调用方法
-                print(message) // 输出: Hello from Objective-C!
+        Text(message)
+            .onAppear {
+                self.message = objCInstance.getMessage() // 调用方法
             }
-        }
     }
 }
 ```
 
 ## 2. Objective-C 调用 Swift
 
-虽然不如 Swift 调用 OC 常见，但在维护旧有 OC 代码库并引入新的 Swift 功能时，这很有用。
+这允许你在现有的 Objective-C 代码中利用新的 Swift 功能或类。
 
 ### 配置步骤
 
-1.  **确保 Swift 类/方法对 Objective-C 可见**:
-    - Swift 类需要继承自 `NSObject` 或其他 Objective-C 类。
-    - 需要暴露给 Objective-C 的 Swift 类、属性、方法等，必须使用 `@objc` 关键字进行标记。
-    - 如果整个类都需要暴露，可以在类定义前加上 `@objcMembers`。
-    - Swift 的结构体 (Struct) 和枚举 (Enum) 如果没有 `@objc` 标记，通常不能直接在 Objective-C 中使用（除非是 Int 类型的原始值枚举）。
+1.  **创建 Swift 文件**: 
+    - 在你的 Xcode 项目中添加 Swift 文件 (`.swift`)。例如，创建 `MySwiftClass.swift`。
+    - 确保你的 Swift 类继承自 `NSObject`。
+    - 使用 `@objc` 标记需要暴露给 Objective-C 的特定方法和属性，或者使用 `@objcMembers` 标记整个类以暴露其所有成员。
 
     ```swift
     // MySwiftClass.swift
     import Foundation
 
-    @objcMembers // 让整个类及其成员对 OC 可见
+    @objcMembers // 或在方法/属性前加 @objc
     class MySwiftClass: NSObject {
-        var swiftProperty: String = "Initial Swift Property"
 
-        @objc func doSomethingFromSwift() {
-            print("Swift method called from Objective-C")
-        }
-
-        @objc func process(message: String) -> String {
-            return "Processed in Swift: \(message)"
+        func getSwiftMessage() -> String {
+            return "Hello from Swift!"
         }
         
-        // 如果不使用 @objcMembers, 需要单独标记
-        // @objc var anotherProperty: Int = 10
-        // @objc func anotherSwiftMethod() {}
+        func greet(name: String) -> String {
+            return "Hello, \(name) from Swift!"
+        }
     }
     ```
 
 2.  **导入自动生成的 Swift 头文件**: 
-    - Xcode 会为你的项目自动生成一个特殊的头文件，名为 `<ProjectName>-Swift.h` (例如 `YourProjectName-Swift.h`)。这个文件包含了所有标记为 `@objc` 或继承自 `NSObject` 的 Swift 声明的 Objective-C 版本。
-    - 在需要调用 Swift 代码的 Objective-C 实现文件 (`.m`) 中，导入这个自动生成的头文件。
+    - Xcode 会为你的项目自动生成一个特殊的头文件，名为 `<ProjectName>-Swift.h`（例如 `YourProjectName-Swift.h`）。这个文件充当了 Swift 代码到 Objective-C 的桥梁。
+    - 在你需要调用 Swift 代码的 Objective-C 实现文件 (`.m`) 中，导入这个自动生成的头文件。
+
     ```objectivec
-    // SomeObjectiveCFile.m
-    #import "SomeObjectiveCFile.h"
-    #import "YourProjectName-Swift.h" // 导入自动生成的 Swift 头文件
-
-    @implementation SomeObjectiveCFile
-
-    - (void)callSwiftCode {
-        MySwiftClass *swiftInstance = [[MySwiftClass alloc] init]; // 像普通 OC 类一样创建实例
-        
-        NSLog(@"Accessing Swift property: %@", swiftInstance.swiftProperty);
-        swiftInstance.swiftProperty = @"Modified by Objective-C"; // 修改属性
-        NSLog(@"Modified Swift property: %@", swiftInstance.swiftProperty);
-        
-        [swiftInstance doSomethingFromSwift]; // 调用 Swift 方法
-        
-        NSString *result = [swiftInstance processWithMessage:@"Data from OC"]; // 调用带参数和返回值的方法
-        NSLog(@"Result from Swift: %@", result);
-    }
-
-    @end
+    // MyObjectiveCClass.m 或其他 .m 文件
+    #import "YourProjectName-Swift.h" // 导入 Swift 桥接头文件
     ```
+    *注意：你不需要手动创建这个文件，Xcode 会在编译时生成它。有时 Xcode 可能不会立即识别它，尝试编译一次项目可能会解决问题。*
 
-### 注意事项
+3.  **确保 Target Membership**: 
+    - 确保你的 Swift 文件 (`.swift`) 属于需要调用它的 Objective-C 代码所在的 Target。
 
-- **命名冲突**: 确保 Swift 和 Objective-C 之间没有命名冲突。
-- **Swift 特性**: 很多 Swift 特有的特性（如泛型、结构体、元组、可选类型的高级用法等）不能直接桥接到 Objective-C。你需要提供 Objective-C 兼容的接口。
-- **构建顺序**: Xcode 会先编译 Swift 代码，生成 `-Swift.h` 文件，然后编译 Objective-C 代码。
+### 使用方法
+
+- 在导入了 `<ProjectName>-Swift.h` 的 Objective-C 文件中，你可以像使用普通的 Objective-C 类一样实例化和调用 Swift 类及其标记为 `@objc` 或包含在 `@objcMembers` 类中的方法/属性。
+
+```objectivec
+// MyObjectiveCClass.m
+#import "MyObjectiveCClass.h"
+#import "swift_oc_demo-Swift.h" // 导入 Swift 桥接头文件
+
+@implementation MyObjectiveCClass
+
+- (NSString *)getMessage {
+    // 实例化 Swift 类
+    MySwiftClass *swiftInstance = [[MySwiftClass alloc] init];
+    
+    // 调用 Swift 类的方法
+    NSString *swiftMessage = [swiftInstance getSwiftMessage];
+    NSString *greeting = [swiftInstance greetWithName:@"Objective-C"];
+    
+    // 组合消息返回
+    return [NSString stringWithFormat:@"Hello from Objective-C!\n -> Also, %@\n -> And: %@", swiftMessage, greeting];
+}
+
+@end
+```
 
 ## 总结
 
-通过桥接头文件 (`<ProjectName>-Bridging-Header.h`) 和自动生成的 Swift 头文件 (`<ProjectName>-Swift.h`)，以及 `@objc` 关键字，可以在 Swift 和 Objective-C 之间实现无缝的双向调用，充分利用两种语言的优势。
+通过桥接头文件 (`<ProjectName>-Bridging-Header.h`) 和 Xcode 自动生成的 Swift 头文件 (`<ProjectName>-Swift.h`)，你可以在同一个项目中无缝地混合使用 Swift 和 Objective-C 代码，实现双向调用。

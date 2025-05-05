@@ -38,8 +38,21 @@
   print(message)
   ```
 
-- **在 Objective-C 中调用 Swift**: (需要额外配置，此 Demo 暂不详细演示，但基本思路是在 Objective-C 文件中导入 Xcode 自动生成的 `<ProjectName>-Swift.h` 头文件)
+- **在 Objective-C 中调用 Swift**:
+  - 确保你的 Swift 类继承自 `NSObject` 并且需要暴露给 Objective-C 的成员（类、方法、属性）标记了 `@objc` 或整个类标记了 `@objcMembers`。
+  - 在需要调用 Swift 代码的 Objective-C 文件 (`.m`) 中，导入 Xcode 自动生成的头文件： `#import "<ProjectName>-Swift.h"` (在本例中是 `#import "swift_oc_demo-Swift.h"`)。
+  - 你现在可以像使用普通 Objective-C 类一样实例化和调用 Swift 类。
+  ```objectivec
+  #import "swift_oc_demo-Swift.h" // 导入 Swift 桥接头文件
+
+  // ... 在某个方法中 ...
+  MySwiftClass *swiftInstance = [[MySwiftClass alloc] init];
+  NSString *swiftMessage = [swiftInstance getSwiftMessage];
+  NSLog(@"%@", swiftMessage);
+  NSString *greeting = [swiftInstance greetWithName:@"Objective-C"];
+  NSLog(@"%@", greeting);
+  ```
 
 ## 示例代码
 
-请查看 `ContentView.swift` 和 `MyObjectiveCClass` 文件中的示例代码，了解具体的调用方式。
+请查看 `ContentView.swift`、`MyObjectiveCClass` 和 `MySwiftClass.swift` 文件中的示例代码，了解双向调用的具体实现。
