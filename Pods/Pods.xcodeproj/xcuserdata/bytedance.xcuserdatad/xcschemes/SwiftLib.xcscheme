@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "84C01F3BA5B49571AB021435FC488164"
-               BuildableName = "SwiftLib"
+               BuildableName = "SwiftLib.framework"
                BlueprintName = "SwiftLib"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>

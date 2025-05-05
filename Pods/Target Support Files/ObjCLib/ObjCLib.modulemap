@@ -1,0 +1,6 @@
+framework module ObjCLib {
+  umbrella header "ObjCLib-umbrella.h"
+
+  export *
+  module * { export * }
+}

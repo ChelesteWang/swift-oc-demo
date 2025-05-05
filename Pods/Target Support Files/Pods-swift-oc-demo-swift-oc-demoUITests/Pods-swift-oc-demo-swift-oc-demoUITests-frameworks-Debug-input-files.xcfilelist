@@ -1,0 +1,3 @@
+${PODS_ROOT}/Target Support Files/Pods-swift-oc-demo-swift-oc-demoUITests/Pods-swift-oc-demo-swift-oc-demoUITests-frameworks.sh
+${BUILT_PRODUCTS_DIR}/ObjCLib/ObjCLib.framework
+${BUILT_PRODUCTS_DIR}/SwiftLib/SwiftLib.framework
